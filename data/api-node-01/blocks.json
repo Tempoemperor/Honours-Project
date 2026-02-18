@@ -1,0 +1,42 @@
+[
+  {
+    "height": 0,
+    "hash": "9f866c76a120fbf10f386510557100d20333c6cc2cad5ef0ea2571114846a0af",
+    "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "timestamp": 1771440125.367709,
+    "validator_address": "genesis",
+    "validator_signature": "genesis_signature",
+    "merkle_root": "f62509f85f66021635a35d853d890621864ab11b7f01b481cef2a4d1f35fe1f0",
+    "consensus_data": {
+      "chain_id": "api-node-01",
+      "genesis": true
+    },
+    "transactions": [
+      {
+        "hash": "f62509f85f66021635a35d853d890621864ab11b7f01b481cef2a4d1f35fe1f0",
+        "type": "genesis",
+        "sender": "genesis",
+        "inputs": [],
+        "outputs": [],
+        "data": {
+          "chain_id": "api-node-01",
+          "validators": [
+            {
+              "name": "validator_0",
+              "address": "0x053592eee539931efd13b65377f8383495f40308",
+              "pub_key": "53b420a50ed312541320e2b0393b2db46abe535251def5acf0b31762765b09862ac8d96b6efc628bb60b1ff00fa679087ea991c5080909fb83b0a2e0193c5f8e",
+              "private_key": "d4e7c456d62deec212bd8155499a8252d91b12881f80e128cc6c2442043d9ef2",
+              "power": 10
+            }
+          ],
+          "genesis_time": 1771440125.3676999
+        },
+        "nonce": 0,
+        "timestamp": 1771440125.3676999,
+        "signature": "genesis_signature",
+        "public_key": ""
+      }
+    ],
+    "version": 1
+  }
+]

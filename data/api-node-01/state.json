@@ -1,0 +1,19 @@
+{
+  "chain_id": "api-node-01",
+  "height": 0,
+  "last_block_hash": "9f866c76a120fbf10f386510557100d20333c6cc2cad5ef0ea2571114846a0af",
+  "app_hash": "d4d01bf4401878c8ea065ed16dfc892405ab86fcf09227d4b96326783d4c6393",
+  "accounts": {},
+  "validators": {
+    "0x053592eee539931efd13b65377f8383495f40308": {
+      "address": "0x053592eee539931efd13b65377f8383495f40308",
+      "pub_key": "53b420a50ed312541320e2b0393b2db46abe535251def5acf0b31762765b09862ac8d96b6efc628bb60b1ff00fa679087ea991c5080909fb83b0a2e0193c5f8e",
+      "power": 10,
+      "name": "validator_0",
+      "active": true,
+      "total_blocks_proposed": 0,
+      "total_blocks_signed": 0
+    }
+  },
+  "custom_state": {}
+}

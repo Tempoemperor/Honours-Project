@@ -1,0 +1,46 @@
+{
+  "num_levels": 5,
+  "creator_address": "0x053592eee539931efd13b65377f8383495f40308",
+  "user_levels": {
+    "0x053592eee539931efd13b65377f8383495f40308": 5
+  },
+  "classifications": {
+    "1": {
+      "level": 1,
+      "name": "Unclassified",
+      "description": "Security level 1"
+    },
+    "2": {
+      "level": 2,
+      "name": "Restricted",
+      "description": "Security level 2"
+    },
+    "3": {
+      "level": 3,
+      "name": "Confidential",
+      "description": "Security level 3"
+    },
+    "4": {
+      "level": 4,
+      "name": "Secret",
+      "description": "Security level 4"
+    },
+    "5": {
+      "level": 5,
+      "name": "Top Secret",
+      "description": "Security level 5"
+    }
+  },
+  "data_count": 0,
+  "audit_log": [
+    {
+      "action": "system_init",
+      "actor": "0x053592eee539931efd13b65377f8383495f40308",
+      "details": {
+        "num_levels": 5,
+        "creator": "0x053592eee539931efd13b65377f8383495f40308"
+      },
+      "timestamp": 1771440125.3676312
+    }
+  ]
+}
