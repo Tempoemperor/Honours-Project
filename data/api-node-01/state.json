@@ -1,0 +1,60 @@
+{
+  "chain_id": "api-node-01",
+  "height": 5,
+  "last_block_hash": "74dcc86f227c37b833c62ad86eafe018395dd9a7337b4726279fb3eb6671a5d9",
+  "app_hash": "26a8d60f7969f4a24679cc7cf1522ee216bd11740b57a6402745ed604d525ecb",
+  "accounts": {
+    "0x8e43b844c43f9a51145586f94584b5d9023877d6": {
+      "address": "0x8e43b844c43f9a51145586f94584b5d9023877d6",
+      "balance": 10000.0,
+      "nonce": 5,
+      "storage": {},
+      "permissions": [
+        "can_transfer",
+        "can_grant_permissions",
+        "can_revoke_permissions",
+        "can_update_validators"
+      ]
+    },
+    "0xDemoUser1aaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+      "address": "0xDemoUser1aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "balance": 50.0,
+      "nonce": 0,
+      "storage": {},
+      "permissions": []
+    },
+    "0xDemoUser2bbbbbbbbbbbbbbbbbbbbbbbbbbbb": {
+      "address": "0xDemoUser2bbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "balance": 25.0,
+      "nonce": 0,
+      "storage": {},
+      "permissions": []
+    },
+    "0xDemoUser3cccccccccccccccccccccccccccc": {
+      "address": "0xDemoUser3cccccccccccccccccccccccccccc",
+      "balance": 75.0,
+      "nonce": 0,
+      "storage": {},
+      "permissions": []
+    },
+    "0x000000000000000000000000000000000000dead": {
+      "address": "0x000000000000000000000000000000000000dead",
+      "balance": 200.0,
+      "nonce": 0,
+      "storage": {},
+      "permissions": []
+    }
+  },
+  "validators": {
+    "0x8e43b844c43f9a51145586f94584b5d9023877d6": {
+      "address": "0x8e43b844c43f9a51145586f94584b5d9023877d6",
+      "pub_key": "6ee409f0702b8f6a28d0e8bcb362fa51ee850754550fa6c0c6d0bc5c302a996dd85b3955249980bf3252b5cf37fc31df10d63e0e98686f15556ec2f40c64cf88",
+      "power": 10,
+      "name": "validator_0",
+      "active": true,
+      "total_blocks_proposed": 5,
+      "total_blocks_signed": 0
+    }
+  },
+  "custom_state": {}
+}

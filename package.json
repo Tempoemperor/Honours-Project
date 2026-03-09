@@ -1,0 +1,52 @@
+{
+	"name": "honours-blockchain-desktop",
+	"version": "1.0.0",
+	"description": "Multi-level Permissioned Blockchain Desktop App",
+	"main": "electron/main.js",
+	"scripts": {
+		"react-start": "cd frontend && npm start",
+		"react-build": "cd frontend && npm run build",
+		"electron-dev": "concurrently \"npm run react-start\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .\"",
+		"electron-pack": "npm run react-build && electron-builder build",
+		"start": "npm run electron-dev"
+	},
+	"build": {
+		"appId": "com.honours.blockchain",
+		"productName": "Blockchain Manager",
+		"directories": {
+			"output": "release"
+		},
+		"files": [
+			"electron/**/*",
+			"frontend/build/**/*"
+		],
+		"extraResources": [
+			{
+				"from": "dist/blockchain_server",
+				"to": "blockchain_server",
+				"filter": [
+					"**/*"
+				]
+			}
+		],
+		"mac": {
+			"target": "dmg",
+			"icon": "frontend/public/logo512.png"
+		},
+		"linux": {
+			"target": "AppImage",
+			"icon": "frontend/public/logo512.png"
+		},
+		"win": {
+			"target": "nsis",
+			"icon": "frontend/public/logo192.png"
+		}
+	},
+	"devDependencies": {
+		"concurrently": "^8.2.2",
+		"cross-env": "^7.0.3",
+		"electron": "^29.0.0",
+		"electron-builder": "^24.13.3",
+		"wait-on": "^7.2.0"
+	}
+}
