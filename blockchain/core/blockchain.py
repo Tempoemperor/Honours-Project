@@ -181,21 +181,43 @@ class Blockchain:
         return True
     
     def propose_block(self, validator_address: str, private_key: str) -> Optional[Block]:
+        """
+        Propose a new block. Validator is looked up from state,
+        but auto-registered if missing (handles cache rebuild after restart).
+        """
         validator = self.state.get_validator(validator_address)
-        if not validator or not validator.active:
+
+        # Auto-register validator if missing from state
+        # This happens when chain is loaded from disk and _bootstrap_all_members
+        # hasn't run yet, or when a non-genesis admin proposes
+        if not validator:
+            from .state import ValidatorState
+            from ..crypto.keys import KeyPair
+            kp = KeyPair(private_key)
+            validator = ValidatorState(
+                address=validator_address,
+                pub_key=kp.get_public_key_hex(),
+                power=10,
+                name="validator_0"
+            )
+            self.state.add_validator(validator)
+            print(f"[propose_block] Auto-registered validator {validator_address[:16]}...")
+
+        if not validator.active:
+            print(f"[propose_block] Validator {validator_address[:8]} is inactive")
             return None
-        
+
         transactions = self.consensus.select_transactions(
             self.pending_transactions,
             validator_address
         )
-        
-        last_block = self.get_last_block()
+
+        last_block    = self.get_last_block()
         consensus_data = self.consensus.prepare_consensus_data(
             validator_address,
             last_block
         )
-        
+
         block = Block(
             height=self.get_height() + 1,
             previous_hash=last_block.hash,
@@ -203,11 +225,11 @@ class Blockchain:
             validator_address=validator_address,
             consensus_data=consensus_data
         )
-        
+
         from ..crypto.signatures import sign_message
         signature = sign_message(block.merkle_root, private_key)
         block.finalize(signature)
-        
+
         return block
     
     def add_block(self, block: Block) -> bool:

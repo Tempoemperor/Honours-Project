@@ -1,55 +1,58 @@
+// frontend/src/api.js
 import axios from 'axios';
 
-async function getBackendUrl() {
-    if (window.electron) {
-        const port = await window.electron.getBackendPort();
-        return `http://127.0.0.1:${port}`;
-    }
-    const params = new URLSearchParams(window.location.search);
-    const port = params.get('backendPort') || '8000';
-    return `http://127.0.0.1:${port}`;
+const API_URL = 'http://localhost:8000';
+
+const client = axios.create({ baseURL: API_URL });
+
+export function setToken(t) {
+  client.defaults.headers.common['Authorization'] = `Bearer ${t}`;
 }
 
-let API_URL = null;
-
-async function client() {
-    if (!API_URL) {
-        API_URL = await getBackendUrl();
-    }
-    return axios.create({ baseURL: API_URL });
+export function clearToken() {
+  delete client.defaults.headers.common['Authorization'];
 }
 
 export const api = {
-    
-    getInfo:      async () => (await client()).get('/chain/info'),
-    getBlocks:    async () => (await client()).get('/chain/blocks'),
-    getUserLevel: async (address) => (await client()).get(`/permissions/user/${address}`),
+  // Auth
+  register:       (username, password)       => client.post('/auth/register', { username, password }),
+  login:          (username, password)       => client.post('/auth/login',    { username, password }),
+  logout:         ()                         => client.post('/auth/logout'),
 
-    getChainConfig: () => axios.get(`${API_URL}/chain/config`),
-    setupInit: (config) => axios.post(`${API_URL}/setup/init`, config),
+  // User
+  getMe:          ()                         => client.get('/user/me'),
 
-    sendTransaction: async (sender, recipient, amount, privateKey) =>
-        (await client()).post('/transaction/transfer', {
-            sender, recipient, amount, private_key: privateKey,
-        }),
+  // Chains
+  getChains:      ()                         => client.get('/chains'),
+  getDiscoverable:()                         => client.get('/chains/discoverable'),
+  switchChain:    (chain_id)                 => client.post('/chains/switch', { chain_id }),
+  joinChain:      (chain_id)                 => client.post('/chains/join',   { chain_id }),
+  setupInit:      (cfg)                      => client.post('/setup/init',    cfg),
+  inviteMember:   (chain_id, target_address, permission_level) =>
+                    client.post(`/chains/${chain_id}/invite`, { target_address, permission_level }),
+  getMembers:     (chain_id)                 => client.get(`/chains/${chain_id}/members`),
+  getInvites: () => client.get('/chains/invites'),
 
-    promoteUser: async (sender, target, level, privateKey) =>
-        (await client()).post('/permissions/promote', {
-            sender, target, level, private_key: privateKey,
-        }),
+  // Chain info
+  getChainInfo:   ()                         => client.get('/chain/info'),
+  getChainConfig: ()                         => client.get('/chain/config'),
+  getBlocks:      (limit = 10)              => client.get(`/chain/blocks?limit=${limit}`),
+  getConsensusLog: (limit = 20) => client.get(`/chain/consensus-log?limit=${limit}`),
+  getConsensusInfo: () => client.get('/chain/consensus-info'),
 
-    storeData: async (sender, dataId, content, level, privateKey) =>
-        (await client()).post('/data/store', {
-            sender, data_id: dataId, content, security_level: level, private_key: privateKey,
-        }),
+  // Transactions
+  sendTransaction:(recipient, amount)        => client.post('/transaction/transfer', { recipient, amount }),
 
-    accessData: async (userAddress, dataId) =>
-        (await client()).get(`/data/access/${dataId}`, {
-            params: { user_address: userAddress },
-        }),
+  // Permissions
+  promoteUser:    (target, level)            => client.post('/permissions/promote', { target, level }),
 
-    mineBlock: async () => (await client()).post('/mine'),
+  // Data / Secret Files
+  storeData:      (data_id, content, security_level) =>
+                    client.post('/data/store', { data_id, content, security_level }),
+  readData:       (data_id)                  => client.get(`/data/access/${data_id}`),
+  listAllData:    ()                         => client.get('/data/list'),
+  listMyData:     ()                         => client.get('/data/mine'),
 
-    getAdminInfo: async () => (await client()).get('/admin/info')
-    
+  // Mine
+  mineBlock:      ()                         => client.post('/mine'),
 };
