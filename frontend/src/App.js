@@ -774,12 +774,21 @@ function Dashboard({ user, onLogout }) {
               <h2>Chain Members</h2>
               {members.length === 0
                 ? <p style={{ color: '#64748b' }}>No members loaded yet.</p>
-                : members.map(m => (
-                  <div key={m.address} className="member-card">
-                    <span className="hash">{m.address.slice(0, 20)}…</span>
-                    <span className="level-badge">L{m.level} — {m.label}</span>
-                  </div>
-                ))
+                : members.map(m => {
+                  // If m.level is 0-indexed (0, 1, 2), we treat it as (1, 2, 3) for the UI
+                  // We check against the chainConfig to ensure we don't double-increment
+                  const displayLevel = m.level + 1;
+                  const labelIndex = displayLevel - 1;
+
+                  return (
+                    <div key={m.address} className="member-card">
+                      <span className="hash">{m.address.slice(0, 20)}…</span>
+                      <span className="level-badge">
+                        L{displayLevel} — {chainConfig?.level_names?.[labelIndex] || m.label || `Level ${displayLevel}`}
+                      </span>
+                    </div>
+                  );
+                })
               }
             </div>
           )}

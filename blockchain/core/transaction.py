@@ -18,6 +18,7 @@ class TransactionType(Enum):
     PERMISSION_REVOKE = "permission_revoke"
     GENESIS = "genesis"
     CUSTOM = "custom"
+    FILE_STORE = "file_store"
 
 
 @dataclass

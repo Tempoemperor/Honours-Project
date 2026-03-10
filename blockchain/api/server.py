@@ -20,6 +20,10 @@ from blockchain.api.auth import (
 
 # ── Pydantic Models ────────────────────────────────────────────────────────────
 
+class PromoteRequest(BaseModel):
+    target: str
+    level: int
+
 class RegisterRequest(BaseModel):
     username: str
     password: str
@@ -644,6 +648,23 @@ def get_consensus_info(ctx: dict = Depends(require_active_chain)):
         "chain_height":    chain.get_height(),
     }
 
+@app.get("/members")
+def get_members(ctx: dict = Depends(require_active_chain)):
+    chain = ctx["chain"]
+    if not chain.permission_system:
+        return []
+    
+    members = []
+    for addr, raw_level in chain.permission_system.user_levels.items():
+        # Use the proper method so defaults work
+        real_level = chain.get_user_permission_level(addr) or 1
+        members.append({
+            "address": addr,
+            "level": real_level,
+            "name": f"Level {real_level}",
+        })
+    return members
+
 
 # ── Transactions ───────────────────────────────────────────────────────────────
 
@@ -674,19 +695,26 @@ def get_user_level(address: str, ctx: dict = Depends(require_active_chain)):
     return {"address": address, "level": level}
 
 @app.post("/permissions/promote")
-def promote_user(req: PermissionRequest, ctx: dict = Depends(require_active_chain)):
-    from blockchain.core.transaction import PermissionTransaction
-    user = ctx["user"]
-    tx = PermissionTransaction(
-        sender=user["address"],
+def promote_user_route(
+    req: PromoteRequest,
+    user: dict = Depends(get_current_user),
+    ctx: dict = Depends(require_active_chain)
+):
+    chain = ctx["chain"]
+    
+    print(f"[API] {user['address'][:8]}... promoting {req.target[:8]}... to L{req.level}")
+    
+    success = chain.promote_user(
+        promoter_address=user["address"],
         target_address=req.target,
-        action="set_level",
-        level=req.level
+        new_level=req.level
     )
-    tx.sign(user["private_key"])
-    if not ctx["chain"].add_transaction(tx):
-        raise HTTPException(400, "Promotion rejected")
-    return {"status": "submitted", "hash": tx.hash()}
+    
+    if not success:
+        raise HTTPException(400, "Promotion rejected by permission rules")
+    
+    return {"status": "ok"}
+
 
 
 # ── Data / Secret Files ────────────────────────────────────────────────────────
@@ -723,7 +751,37 @@ def store_intel(req: DataStoreRequest, ctx: dict = Depends(require_active_chain)
     )
     if not success:
         raise HTTPException(403, "Failed to store file. Insufficient clearance.")
-    return {"status": "stored", "unique_id": unique_id, "name": req.data_id}
+
+    # --- NEW: emit FILE_STORE transaction (metadata only) ---
+    from blockchain.core.transaction import Transaction, TransactionType
+
+    acct = chain.state.get_account(user["address"])
+    file_tx = Transaction(
+        tx_type=TransactionType.FILE_STORE,
+        sender=user["address"],
+        inputs=[],    # no monetary movement
+        outputs=[],   # purely logical
+        nonce=acct.nonce,
+        timestamp=None,
+        data={
+            "data_id":        unique_id,
+            "security_level": req.security_level,
+            "name":           req.data_id,
+            "owner":          user["address"],
+        },
+    )
+    file_tx.sign(user["private_key"])
+    if not chain.add_transaction(file_tx):
+        # If for some reason it fails, we still keep the stored file,
+        # but inform the client that the audit tx was not queued.
+        raise HTTPException(500, "File stored, but failed to enqueue FILE_STORE transaction.")
+
+    return {
+        "status": "stored",
+        "unique_id": unique_id,
+        "name": req.data_id,
+        "tx_hash": file_tx.hash(),
+    }
 
 
 @app.get("/data/access/{data_id}")
