@@ -17,8 +17,6 @@ def sign_message(message: str, private_key_hex: str) -> str:
     Returns:
         Hex-encoded signature
     """
-
-    private_key_hex = private_key_hex.removeprefix('0x')
     # Create signing key
     private_key = SigningKey.from_string(
         bytes.fromhex(private_key_hex),

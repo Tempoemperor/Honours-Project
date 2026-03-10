@@ -70,34 +70,26 @@ class ProofOfAuthority(BaseConsensus):
     
     def validate_block(self, block: Block, state: BlockchainState) -> bool:
         """Validate block using PoA rules"""
-        print(f"[PoA] Validating block {block.height}")
-        print(f"[PoA] Validator: {block.validator_address}")
-        print(f"[PoA] Authorities: {self.authorities}")
-        
+        # Verify proposer is an authority
         if block.validator_address not in self.authorities:
-            print(f"[PoA] FAIL: Proposer not an authority")
+            print(f"Proposer {block.validator_address} is not an authority")
             return False
-
-        expected_proposer = self.select_proposer(block.height, state.get_active_validators())
-        print(f"[PoA] Expected proposer: {expected_proposer}")
         
+        # Verify it's the correct authority's turn
+        expected_proposer = self.select_proposer(block.height, state.get_active_validators())
         if block.validator_address != expected_proposer:
-            print(f"[PoA] FAIL: Wrong authority turn")
+            print(f"Wrong authority turn. Expected: {expected_proposer}")
             return False
-
-        # Check block time (configurable, disabled by default for single-node)
-        enforce_timing = self.config.get('enforce_block_time', False)
-        if enforce_timing and hasattr(state, 'blockchain'):
-            previous_block = state.blockchain.get_block(block.height - 1)
-            if previous_block:
-                time_diff = block.timestamp - previous_block.timestamp
-                if time_diff < self.config['block_time'] * 0.5:
-                    print(f"[PoA] FAIL: Block too quick: {time_diff}s")
-                    return False
-
-        print(f"[PoA] PASS: Block valid")
+        
+        # Check block time
+        # Only check timing if we have height context via state
+        if block.height > 0 and hasattr(state, 'last_block_timestamp'):
+            time_diff = block.timestamp - state.last_block_timestamp
+            if time_diff < self.config['block_time'] * 0.5:
+                print(f"Block produced too quickly: {time_diff}s")
+                return False
+        
         return True
-
     
     def select_proposer(self, height: int, validators: List[ValidatorState]) -> Optional[str]:
         """Select next authority in round-robin fashion"""

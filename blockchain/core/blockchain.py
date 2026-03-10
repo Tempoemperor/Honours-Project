@@ -148,9 +148,8 @@ class Blockchain:
         if transaction.nonce < account.nonce:
             print(f"[Validation Fail] Invalid nonce {transaction.nonce} (expected >= {account.nonce})")
             return False
-
+        
         # 4. Check permissions
-        print(f"[DEBUG] Reached permissions check for {transaction.sender[:16]}")
         if not self._check_transaction_permissions(transaction):
             print(f"[Validation Fail] Permission denied for {transaction.sender[:8]}")
             return False
@@ -158,6 +157,7 @@ class Blockchain:
         return True
     
     def _check_transaction_permissions(self, transaction: Transaction) -> bool:
+        """Check if sender has permission to execute transaction"""
         permission_map = {
             TransactionType.TRANSFER: "can_transfer",
             TransactionType.VALIDATOR_UPDATE: "can_update_validators",
@@ -168,12 +168,6 @@ class Blockchain:
         required_permission = permission_map.get(transaction.tx_type)
         if required_permission:
             has_permission = self.state.has_permission(transaction.sender, required_permission)
-            # ← ADD THESE DEBUG LINES
-            print(f"[PermCheck] sender={transaction.sender[:16]}")
-            print(f"[PermCheck] required={required_permission}")
-            print(f"[PermCheck] has_permission={has_permission}")
-            account = self.state.get_account(transaction.sender)
-            print(f"[PermCheck] account.permissions={account.permissions}")
             if not has_permission:
                 return False
         
@@ -187,25 +181,21 @@ class Blockchain:
         return True
     
     def propose_block(self, validator_address: str, private_key: str) -> Optional[Block]:
-        print(f"[ProposeBlock] validator={validator_address[:16]}")
         validator = self.state.get_validator(validator_address)
-        print(f"[ProposeBlock] found={validator}, active={validator.active if validator else 'N/A'}")
         if not validator or not validator.active:
-            print(f"[ProposeBlock] FAIL: validator not found or inactive")
             return None
-
+        
         transactions = self.consensus.select_transactions(
             self.pending_transactions,
             validator_address
         )
-        print(f"[ProposeBlock] selected {len(transactions)} transactions")
-
+        
         last_block = self.get_last_block()
         consensus_data = self.consensus.prepare_consensus_data(
             validator_address,
             last_block
         )
-
+        
         block = Block(
             height=self.get_height() + 1,
             previous_hash=last_block.hash,
@@ -213,21 +203,20 @@ class Blockchain:
             validator_address=validator_address,
             consensus_data=consensus_data
         )
-
+        
         from ..crypto.signatures import sign_message
         signature = sign_message(block.merkle_root, private_key)
         block.finalize(signature)
-        print(f"[ProposeBlock] block created height={block.height}")
+        
         return block
-
     
     def add_block(self, block: Block) -> bool:
         if not self._verify_block(block):
-            print(f"[AddBlock] _verify_block failed")
+            print(f"Block verification failed: {block}")
             return False
-
+        
         if not self.consensus.validate_block(block, self.state):
-            print(f"[AddBlock] consensus.validate_block failed")
+            print(f"Consensus validation failed: {block}")
             return False
         
         if not self._execute_block_transactions(block):
@@ -257,31 +246,21 @@ class Blockchain:
         return True
     
     def _verify_block(self, block: Block) -> bool:
-        print(f"[VerifyBlock] height check: block={block.height}, expected={self.get_height() + 1}")
         if block.height != self.get_height() + 1:
-            print(f"[VerifyBlock] FAIL: wrong height")
             return False
-
+        
         last_block = self.get_last_block()
-        print(f"[VerifyBlock] hash check: block.prev={block.previous_hash[:8]}, last={last_block.hash[:8]}")
         if block.previous_hash != last_block.hash:
-            print(f"[VerifyBlock] FAIL: wrong previous hash")
             return False
-
-        print(f"[VerifyBlock] merkle check")
+        
         if not block.verify_merkle_root():
-            print(f"[VerifyBlock] FAIL: merkle root mismatch")
             return False
-
-        print(f"[VerifyBlock] tx verification, count={len(block.transactions)}")
+        
         for tx in block.transactions:
             if not self._verify_transaction(tx):
-                print(f"[VerifyBlock] FAIL: tx {tx.hash()[:8]} invalid")
                 return False
-
-        print(f"[VerifyBlock] PASS")
+        
         return True
-
     
     def _execute_block_transactions(self, block: Block) -> bool:
         snapshot = self.state.snapshot()

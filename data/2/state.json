@@ -1,0 +1,32 @@
+{
+  "chain_id": "2",
+  "height": 2,
+  "last_block_hash": "35dd89aefee04a9cc7a51ab9169799de70ebc1194b38a9a0bf4868587332487e",
+  "app_hash": "868c1e1a662aacf59c2e33ce508009e14a147484ad437f61c9d83868eb75c1b6",
+  "accounts": {
+    "0x248e28fbb388a3c8b80ec31bed61f5bc74ff9bae": {
+      "address": "0x248e28fbb388a3c8b80ec31bed61f5bc74ff9bae",
+      "balance": 10000,
+      "nonce": 0,
+      "storage": {},
+      "permissions": [
+        "can_transfer",
+        "can_grant_permissions",
+        "can_revoke_permissions",
+        "can_update_validators"
+      ]
+    }
+  },
+  "validators": {
+    "0x248e28fbb388a3c8b80ec31bed61f5bc74ff9bae": {
+      "address": "0x248e28fbb388a3c8b80ec31bed61f5bc74ff9bae",
+      "pub_key": "6fb38618a74e847f32e156f6f43b506f4bd9685e273105caacc7691cef2a3fb42be1cd50b354d30a8b93bfbc653d0eb93ff7267e128c58ac1f509d35705bff61",
+      "power": 10,
+      "name": "validator_0",
+      "active": true,
+      "total_blocks_proposed": 2,
+      "total_blocks_signed": 0
+    }
+  },
+  "custom_state": {}
+}

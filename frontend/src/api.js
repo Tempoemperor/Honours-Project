@@ -20,9 +20,13 @@ async function client() {
 }
 
 export const api = {
+    
     getInfo:      async () => (await client()).get('/chain/info'),
     getBlocks:    async () => (await client()).get('/chain/blocks'),
     getUserLevel: async (address) => (await client()).get(`/permissions/user/${address}`),
+
+    getChainConfig: () => axios.get(`${API_URL}/chain/config`),
+    setupInit: (config) => axios.post(`${API_URL}/setup/init`, config),
 
     sendTransaction: async (sender, recipient, amount, privateKey) =>
         (await client()).post('/transaction/transfer', {
@@ -47,4 +51,5 @@ export const api = {
     mineBlock: async () => (await client()).post('/mine'),
 
     getAdminInfo: async () => (await client()).get('/admin/info')
+    
 };

@@ -1,0 +1,82 @@
+/* frontend/src/Setup.css */
+.setup-overlay {
+	position: fixed; inset: 0;
+	background: #0a0e1a;
+	display: flex; align-items: center; justify-content: center;
+	z-index: 1000;
+  }
+  
+  .setup-wizard {
+	background: #111827;
+	border: 1px solid #1e3a5f;
+	border-radius: 12px;
+	padding: 2.5rem;
+	width: 540px;
+	max-height: 90vh;
+	overflow-y: auto;
+	box-shadow: 0 0 40px rgba(0, 120, 255, 0.15);
+  }
+  
+  .setup-header h1 { color: #60a5fa; margin-bottom: 1rem; }
+  
+  .step-indicator {
+	display: flex; gap: 0.5rem; margin-bottom: 1.5rem;
+  }
+  .step-dot {
+	width: 28px; height: 28px; border-radius: 50%;
+	background: #1e3a5f; color: #60a5fa;
+	display: flex; align-items: center; justify-content: center;
+	font-size: 0.75rem; font-weight: bold;
+  }
+  .step-dot.active { background: #1d4ed8; color: white; }
+  
+  .setup-step h2 { color: #e2e8f0; margin-bottom: 0.5rem; }
+  .setup-step p { color: #94a3b8; margin-bottom: 1rem; font-size: 0.9rem; }
+  
+  .setup-input {
+	width: 100%; padding: 0.6rem 0.8rem;
+	background: #1e293b; border: 1px solid #334155;
+	border-radius: 6px; color: #e2e8f0;
+	font-size: 0.95rem; margin-bottom: 1rem;
+	box-sizing: border-box;
+  }
+  .setup-input.small { margin-bottom: 0.4rem; }
+  
+  .consensus-options { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+  .consensus-card {
+	padding: 1rem; border-radius: 8px;
+	border: 1px solid #334155; cursor: pointer;
+	background: #1e293b; transition: all 0.2s;
+  }
+  .consensus-card:hover { border-color: #3b82f6; }
+  .consensus-card.selected { border-color: #3b82f6; background: #1e3a5f; }
+  .consensus-card h3 { color: #93c5fd; margin: 0 0 0.25rem; font-size: 0.95rem; }
+  .consensus-card p { color: #64748b; margin: 0; font-size: 0.82rem; }
+  
+  .setup-btn {
+	padding: 0.65rem 1.5rem; background: #1d4ed8;
+	color: white; border: none; border-radius: 6px;
+	cursor: pointer; font-size: 0.95rem; font-weight: 600;
+  }
+  .setup-btn:hover { background: #2563eb; }
+  .setup-btn:disabled { background: #334155; cursor: not-allowed; }
+  .setup-btn.secondary { background: #334155; margin-right: 0.75rem; }
+  
+  .setup-nav { display: flex; justify-content: flex-end; margin-top: 1rem; }
+  
+  .key-card {
+	background: #0f172a; border: 1px solid #1e3a5f;
+	border-radius: 8px; padding: 1rem; margin-bottom: 1rem;
+  }
+  .key-card code {
+	font-size: 0.78rem; color: #34d399;
+	word-break: break-all;
+  }
+  .key-card p { margin: 0.4rem 0; color: #94a3b8; font-size: 0.88rem; }
+  .key-card strong { color: #e2e8f0; }
+  
+  .warning { color: #f59e0b; font-size: 0.85rem; margin-bottom: 1rem; }
+  .setup-error { color: #ef4444; font-size: 0.85rem; }
+  .hint { color: #64748b; font-size: 0.82rem; }
+  .level-names { margin-bottom: 1rem; }
+  

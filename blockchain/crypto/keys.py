@@ -20,7 +20,6 @@ class KeyPair:
             private_key: Hex-encoded private key (generates new if None)
         """
         if private_key:
-            private_key = private_key.removeprefix('0x')  # ← ADD THIS LINE
             self.private_key = SigningKey.from_string(
                 bytes.fromhex(private_key),
                 curve=SECP256k1

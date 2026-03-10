@@ -1,0 +1,14 @@
+{
+  "chain_id": "2",
+  "consensus": "poa",
+  "permission_levels": 2,
+  "level_names": [
+    "Unclassified",
+    "Restricted"
+  ],
+  "max_transactions_per_block": 100,
+  "allow_file_storage": false,
+  "admin_address": "0x248e28fbb388a3c8b80ec31bed61f5bc74ff9bae",
+  "admin_private_key": "3d1d9eca6c9cc49a4af7ff178af0a712810c630d2885a095fa252de7bcc56db0",
+  "created_at": 1773111226.540757
+}
